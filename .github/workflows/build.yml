@@ -92,17 +92,23 @@ jobs:
         find V2rayNG/app/build/outputs/apk/ -type f -exec du -h {} \;
 
     - name: Sign APK files
-      uses: ilharp/sign-android-release@v1
+      uses: ilharp/sign-android-release@v1.0.4
       with:
-        releaseDir: V2rayNG/app/build/outputs/apk/release/
+        releaseDir: V2rayNG/app/build/outputs/apk/release
         keyAlias: ${{ env.ALIAS }}
         keyPassword: ${{ env.KEYPASSWORD }}
         keyStorePassword: ${{ env.KEYSTOREPASSWORD }}
         signingKey: ${{ env.SIGNINGKEYBASE64 }}
         buildToolsVersion: 33.0.2
 
+    - uses: jungwinter/split@v2
+      id: signed_files
+      with:
+        msg: ${{ steps.sign_app.outputs.signedFiles }}
+        separator: ':'
+
     - name: Upload APK files
       uses: actions/upload-artifact@v3
       with:
-        name: v2rayNG_arm64-v8a-signed
+        name: v2rayNG
         path: V2rayNG/app/build/outputs/apk/release/*.apk
